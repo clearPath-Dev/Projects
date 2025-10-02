@@ -72,8 +72,8 @@ Work and systems here may reference or integrate:
 ## 📬 Contact  
 
 For inquiries about work featured here, or to discuss potential projects:  
-- **Website:** [clearpathautomations.com](#)  
-- **Email:** contact@clearpathautomations.com  
+- **Website:** [clearpathautomations.tech](#)  
+- **Email:** contact@clearpathautomations.tech 
 - **LinkedIn:** https://www.linkedin.com/in/tyler-a-guitroz-45934b93/  
 
 ---
