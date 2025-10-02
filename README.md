@@ -20,8 +20,8 @@ The repository is organized into three main sections:
 ## 🗂️ Index  
 
 ### 🔹 Work  
-| Project | Description | Links |  
-|---------|-------------|-------|  
+| Project | Description |  
+|---------|-------------| 
 | **HirePlexus** | Replatformed from WordPress to Squarespace. Automated workflows, custom integrations, and full redesign.  
 | **Remembering Rhonda** | Memorial site with custom design, copy, and graphics. Built from scratch in Squarespace. 
 | **Mount Herman** | A Non-profit web home with custom design, copy, and graphics. Built from scratch in Squarespace. 
@@ -29,17 +29,17 @@ The repository is organized into three main sections:
 ---
 
 ### 🔹 Projects  
-| Project | Description | Links |  
-|---------|-------------|-------|  
-| **Fractal Habit Loop Tracker** | Notion template for habit-building using fractal logic. | [Repo/Docs](#) |  
-| **Language Learning CLI** | Python & Bash tool for word-of-the-day, IPA integration, and shortcuts. | [Repo/Docs](#) |  
-| **Portfolio Site** | Webflow prototype with marquee menu, side scroll, and CMS-driven sections. | [Live](#) |  
+| Project | Description |  
+|---------|-------------| 
+| **Fractal Habit Loop Tracker** | Notion template for habit-building using fractal logic. |
+| **Language Learning CLI** | Python & Bash tool for word-of-the-day, IPA integration, and shortcuts. | 
+| **Portfolio Site** | Webflow prototype with marquee menu, side scroll, and CMS-driven sections. |   
 
 ---
 
 ### 🔹 Systems  
-| System | Description | Links |  
-|--------|-------------|-------|  
+| System | Description |  
+|--------|-------------|  
 | **Affirmation Generator** | API integrated terminal affirmation-based quote generator. |   
 | **Terminal Tarot** | Mini unencumbered Tarot card generator |
 | **Academic Paper Generator** | API generated paper compiler |
