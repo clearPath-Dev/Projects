@@ -1,0 +1,24 @@
+# Your Paper Digest — {{ date }}
+
+**Topics:** {{ ", ".join(topics) }}
+**Reader level:** {{ level|title }}
+**How to read:** {{ guidance }}
+
+---
+
+{% for p in papers %}
+### {{ loop.index }}) {{ p.title }}
+- **Authors:** {{ ", ".join(p.authors) if p.authors else "—" }}
+- **Published:** {{ p.published.strftime("%Y-%m-%d") if p.published else "—" }}
+- **Category:** {{ p.primary_category or "—" }}
+- **Link:** {{ p.link }}
+- **PDF:** {{ p.pdf or "—" }}
+
+**Why it matters:** {{ p.why_it_matters if p.why_it_matters else "—" }}
+
+**Abstract**
+> {{ p.summary.replace("\n\n", "\n").strip() }}
+{% if not loop.last %}
+---
+{% endif %}
+{% endfor %}
