@@ -1,0 +1,23 @@
+{
+  "name": "live-code",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "parcel serve src/main.js --dist-dir dist --port 5173",
+    "build": "parcel build src/main.js --dist-dir dist --public-url ./",
+    "deploy:staging": "node scripts/deploy.js staging",
+    "deploy:prod": "node scripts/deploy.js prod",
+    "publish:webflow": "node scripts/webflowPublish.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "dotenv": "^17.2.3",
+    "node-fetch": "^3.3.2",
+    "parcel": "^2.16.0"
+  }
+}

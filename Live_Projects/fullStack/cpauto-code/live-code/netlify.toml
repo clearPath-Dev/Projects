@@ -1,0 +1,14 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[context.production]
+  base = "main"
+
+[context.staging]
+  base = "staging"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

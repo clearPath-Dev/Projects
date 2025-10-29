@@ -1,0 +1,13 @@
+# Node + Parcel
+node_modules/
+.cache/
+dist/
+
+# Environment / Secrets
+.env
+
+# OS / IDE junk
+.DS_Store
+Thumbs.db
+.vscode/
+
