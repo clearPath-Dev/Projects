@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            line-height: 1.6;
+            padding: 40px 20px;
+            overflow-x: hidden;
+        }
+
+        .calculator-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: 
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 30px 30px;
+            background-color: #0a0a0a;
+            padding: 40px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: #ffffff;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .header p {
+            color: #999;
+            font-size: 1rem;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .diagram-container {
+            position: relative;
+            min-height: 800px;
+            margin-bottom: 40px;
+        }
+
+        svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .connection-line {
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 2;
+            fill: none;
+            transition: all 0.3s ease;
+        }
+
+        .connection-line.active {
+            stroke: #4a9eff;
+            stroke-width: 3;
+            filter: drop-shadow(0 0 8px rgba(74, 158, 255, 0.6));
+        }
+
+        .connection-line.selected {
+            stroke: #7b68ee;
+            stroke-width: 2.5;
+        }
+
+        .nodes-container {
+            position: relative;
+            z-index: 2;
+        }
+
+        .node-row {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 100px;
+            flex-wrap: wrap;
+        }
+
+        .node {
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            pointer-events: all;
+        }
+
+        .node.disabled {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        /* Start Node */
+        .node.start {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #f4e4a3, #d4c483);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid #d4c483;
+            box-shadow: 0 4px 20px rgba(244, 228, 163, 0.3);
+        }
+
+        .node.start .node-content {
+            text-align: center;
+            color: #2a2a2a;
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 10px;
+        }
+
+        /* Service Nodes (Rectangles) */
+        .node.service {
+            width: 200px;
+            background: rgba(160, 200, 160, 0.3);
+            border: 2px solid #a0c8a0;
+            padding: 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .node.service:hover,
+        .node.service.selected {
+            background: rgba(160, 200, 160, 0.5);
+            border-color: #c0e8c0;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(160, 200, 160, 0.4);
+        }
+
+        .node.service.selected::after {
+            content: '✓';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 30px;
+            height: 30px;
+            background: #4a9eff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(74, 158, 255, 0.5);
+        }
+
+        /* Complexity Nodes (Diamonds) */
+        .node.complexity {
+            width: 180px;
+            height: 180px;
+            background: rgba(200, 160, 220, 0.3);
+            border: 2px solid #c8a0dc;
+            transform: rotate(45deg);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .node.complexity .node-content {
+            transform: rotate(-45deg);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .node.complexity:hover,
+        .node.complexity.selected {
+            background: rgba(200, 160, 220, 0.5);
+            border-color: #d8b0ec;
+            box-shadow: 0 8px 30px rgba(200, 160, 220, 0.4);
+        }
+
+        .node.complexity.selected::after {
+            content: '✓';
+            position: absolute;
+            top: -15px;
+            right: 75px;
+            width: 30px;
+            height: 30px;
+            background: #4a9eff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            transform: rotate(-45deg);
+            box-shadow: 0 2px 10px rgba(74, 158, 255, 0.5);
+        }
+
+        /* Client Type Nodes (Rounded Rectangles) */
+        .node.client {
+            width: 180px;
+            background: rgba(180, 200, 240, 0.3);
+            border: 2px solid #b4c8f0;
+            padding: 20px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .node.client:hover,
+        .node.client.selected {
+            background: rgba(180, 200, 240, 0.5);
+            border-color: #c4d8ff;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(180, 200, 240, 0.4);
+        }
+
+        .node.client.selected::after {
+            content: '✓';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 30px;
+            height: 30px;
+            background: #4a9eff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(74, 158, 255, 0.5);
+        }
+
+        /* End Node */
+        .node.end {
+            width: 160px;
+            background: rgba(180, 220, 240, 0.3);
+            border: 2px solid #b4dcf0;
+            border-left: 8px solid #b4dcf0;
+            padding: 20px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .node.end.active {
+            background: rgba(180, 220, 240, 0.5);
+            border-color: #c4ecff;
+            box-shadow: 0 8px 30px rgba(180, 220, 240, 0.6);
+            animation: pulse 2s ease infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .node-icon {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .node-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #ffffff;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .node-subtitle {
+            font-size: 0.75rem;
+            color: #b0b0b0;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .node-price {
+            font-size: 0.85rem;
+            color: #4a9eff;
+            margin-top: 8px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .summary-panel {
+            background: rgba(30, 30, 30, 0.8);
+            border: 2px solid rgba(74, 158, 255, 0.3);
+            border-radius: 12px;
+            padding: 40px;
+            margin-top: 60px;
+            display: none;
+            animation: slideUp 0.5s ease;
+        }
+
+        .summary-panel.active {
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .summary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .summary-title {
+            font-size: 1.8rem;
+            color: #ffffff;
+            font-weight: 300;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .reset-button {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: #999;
+            padding: 10px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .reset-button:hover {
+            border-color: #4a9eff;
+            color: #4a9eff;
+            transform: translateY(-2px);
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .summary-item {
+            background: rgba(20, 20, 20, 0.6);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .summary-label {
+            font-size: 0.85rem;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .summary-value {
+            font-size: 1.1rem;
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        .total-section {
+            background: linear-gradient(135deg, rgba(74, 158, 255, 0.2), rgba(123, 104, 238, 0.2));
+            border: 2px solid rgba(74, 158, 255, 0.4);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .total-label {
+            color: #b0b0b0;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 15px;
+        }
+
+        .total-amount {
+            font-size: 3rem;
+            color: #ffffff;
+            font-weight: 300;
+            margin-bottom: 10px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .total-note {
+            color: #888;
+            font-size: 0.85rem;
+            font-style: italic;
+        }
+
+        .discount-badge {
+            display: inline-block;
+            background: rgba(123, 104, 238, 0.3);
+            border: 1px solid rgba(123, 104, 238, 0.5);
+            color: #b4a0ff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-top: 15px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #4a9eff, #7b68ee);
+            color: #ffffff;
+            padding: 16px 48px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-top: 30px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(74, 158, 255, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .node-row {
+                flex-direction: column;
+                align-items: center;
+                gap: 60px;
+                margin-bottom: 80px;
+            }
+
+            .node.complexity {
+                width: 160px;
+                height: 160px;
+            }
+
+            .total-amount {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator-container">
+        <div class="header">
+            <h1>Interactive Pricing Calculator</h1>
+            <p>Hover over nodes to explore pathways • Click to build your estimate</p>
+        </div>
+
+        <div class="diagram-container">
+            <svg id="connectionsSvg"></svg>
+            
+            <div class="nodes-container">
+                <!-- Start Node -->
+                <div class="node-row" style="margin-bottom: 80px;">
+                    <div class="node start" id="start-node" data-node-id="start">
+                        <div class="node-content">
+                            <div>START</div>
+                            <div style="font-size: 0.7rem; margin-top: 5px;">Build Your<br>Project</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service Selection -->
+                <div class="node-row" id="service-row">
+                    <div class="node service" data-node-id="service-1" data-service="architecting" onmouseenter="highlightConnections(this)" onmouseleave="clearHighlights()" onclick="selectService(this, 'architecting', 'Architecting & Systemizing')">
+                        <div class="node-content">
+                            <div class="node-icon">🧩</div>
+                            <div class="node-title">Architecting</div>
+                            <div class="node-subtitle">Low/no-code frameworks</div>
+                            <div class="node-price">$400 – $5K+</div>
+                        </div>
+                    </div>
+                    <div class="node service" data-node-id="service-2" data-service="automating" onmouseenter="highlightConnections(this)" onmouseleave="clearHighlights()" onclick="selectService(this, 'automating', 'Automating')">
+                        <div class="node-content">
+                            <div class="node-icon">⚙️</div>
+                            <div class="node-title">Automating</div>
+                            <div class="node-subtitle">CRM & API workflows</div>
+                            <div class="node-price">$250 – $4K+</div>
+                        </div>
+                    </div>
+                    <div class="node service" data-node-id="service-3" data-service="design" onmouseenter="highlightConnections(this)" onmouseleave="clearHighlights()" onclick="selectService(this, 'design', 'Web Design')">
+                        <div class="node-content">
+                            <div class="node-icon">🎨</div>
+                            <div class="node-title">Web Design</div>
+                            <div class="node-subtitle">Replatforming & builds</div>
+                            <div class="node-price">$600 – $6K+</div>
+                        </div>
+                    </div>
+                    <div class="node service" data-node-id="service-4" data-service="api" onmouseenter="highlightConnections(this)" onmouseleave="clearHighlights()" onclick="selectService(this, 'api', 'API Integration')">
+                        <div class="node-content">
+                            <div class="node-icon">📡</div>
+                            <div class="node-title">API Integration</div>
+                            <div class="node-subtitle">Microservices & pipelines</div>
+                            <div class="node-price">$800 – $8K+</div>
+                        </div>
+                    </div>
+                    <div class="node service" data-node-id="service-5" data-service="optimization" onmouseenter="highlightConnections(this)" onmouseleave="clearHighlights()" onclick="selectService(this, 'optimization', 'Optimization')">
+                        <div class="node-content">
+                            <div class="node-icon">⚡</div>
+                            <div class="node-title">Optimization</div>
+                            <div class="node-subtitle">Performance tuning</div>
+                            <div class="node-price">$350 – $2.5K</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Complexity Selection -->
+                <div class="node-row" id="complexity-row">
+                    <div class="node complexity disabled" data-node-id="complexity-1" onmouseenter="highlightConnections(this)" onmouseleave="clearHighlights()" onclick="selectComplexity(this, 'simple')">
+                        <div class="node-content">
+                            <div class="node-title">Simple</div>
+                            <div class="node-subtitle">Basic setup</div>
+                        </div>
+                    </div>
+                    <div class="node complexity disabled" data-node-id="complexity-2" onmouseenter="highlightConnections(this)" onmouseleave="clearHighlights()" onclick="selectComplexity(this, 'moderate')">
+                        <div class="node-content">
+                            <div class="node-title">Moderate</div>
+                            <div class="node-subtitle">Multi-tool</div>
+                        </div>
+                    </div>
+                    <div class="node complexity disabled" data-node-id="complexity-3" onmouseenter="highlightConnections(this)" onmouseleave="clearHighlights()" onclick="selectComplexity(this, 'advanced')">
+                        <div class="node-content">
+                            <div class="node-title">Advanced</div>
+                            <div class="node-subtitle">Enterprise</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Client Type Selection -->
+                <div class="node-row" id="client-row">
+                    <div class="node client disabled" data-node-id="client-1" onmouseenter="highlightConnections(this)" onmouseleave="clearHighlights()" onclick="selectClient(this, 'standard', 0)">
+                        <div class="node-content">
+                            <div class="node-title">Standard</div>
+                            <div class="node-subtitle">Full rate</div>
+                        </div>
+                    </div>
+                    <div class="node client disabled" data-node-id="client-2" onmouseenter="highlightConnections(this)" onmouseleave="clearHighlights()" onclick="selectClient(this, 'startup', 15)">
+                        <div class="node-content">
+                            <div class="node-title">Startup</div>
+                            <div class="node-subtitle">10-20% off</div>
+                        </div>
+                    </div>
+                    <div class="node client disabled" data-node-id="client-3" onmouseenter="highlightConnections(this)" onmouseleave="clearHighlights()" onclick="selectClient(this, 'nonprofit', 27)">
+                        <div class="node-content">
+                            <div class="node-title">Nonprofit</div>
+                            <div class="node-subtitle">25-30% off</div>
+                        </div>
+                    </div>
+                    <div class="node client disabled" data-node-id="client-4" onmouseenter="highlightConnections(this)" onmouseleave="clearHighlights()" onclick="selectClient(this, 'creator', 20)">
+                        <div class="node-content">
+                            <div class="node-title">Creator</div>
+                            <div class="node-subtitle">Flexible</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- End Node -->
+                <div class="node-row">
+                    <div class="node end" id="end-node" data-node-id="end">
+                        <div class="node-content">
+                            <div class="node-title">Get Estimate</div>
+                            <div class="node-subtitle">View your pricing</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-panel" id="summaryPanel">
+            <div class="summary-header">
+                <div class="summary-title">Your Custom Estimate</div>
+                <button class="reset-button" onclick="resetCalculator()">↻ Start Over</button>
+            </div>
+
+            <div class="summary-grid" id="summaryGrid"></div>
+
+            <div class="total-section">
+                <div class="total-label">ESTIMATED INVESTMENT</div>
+                <div class="total-amount" id="totalAmount">$0</div>
+                <div class="total-note">Final pricing determined during consultation</div>
+                <div id="discountBadge"></div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="cta-button" onclick="alert('This would open your contact form or scheduling system')">Schedule Consultation</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const state = {
+            service: null,
+            complexity: null,
+            client: null,
+            connections: [],
+            pricing: {}
+        };
+
+        const pricingData = {
+            architecting: { simple: [400, 800], moderate: [1000, 2000], advanced: [2500, 5000] },
+            automating: { simple: [250, 600], moderate: [800, 1800], advanced: [2000, 4000] },
+            design: { simple: [600, 1200], moderate: [1500, 3000], advanced: [3500, 6000] },
+            api: { simple: [800, 1500], moderate: [2500, 5000], advanced: [4000, 8000] },
+            optimization: { simple: [350, 700], moderate: [1000, 2500], advanced: [1000, 2500] }
+        };
+
+        const serviceNames = {
+            architecting: 'Architecting & Systemizing',
+            automating: 'Automating',
+            design: 'Web Design & Replatforming',
+            api: 'API & Microservice Integration',
+            optimization: 'Web Service Optimization'
+        };
+
+        const complexityNames = {
+            simple: 'Simple/Basic',
+            moderate: 'Moderate/Intermediate',
+            advanced: 'Advanced/Enterprise'
+        };
+
+        const clientNames = {
+            standard: 'Standard Rate',
+            startup: 'Early-Stage Startup',
+            nonprofit: 'Nonprofit/Educator',
+            creator: 'Independent Creator'
+        };
+
+        function initConnections() {
+            drawConnections();
+            window.addEventListener('resize', drawConnections);
+        }
+
+        function getNodeCenter(node) {
+            const rect = node.getBoundingClientRect();
+            const container = document.querySelector('.diagram-container').getBoundingClientRect();
+            return {
+                x: rect.left + rect.width / 2 - container.left,
+                y: rect.top + rect.height / 2 - container.top
+            };
+        }
+
+        function drawConnections() {
+            const svg = document.getElementById('connectionsSvg');
+            svg.innerHTML = '';
+            state.connections = [];
+
+            const startNode = document.getElementById('start-node');
+            const serviceNodes = document.querySelectorAll('[data-service]');
+            const complexityNodes = document.querySelectorAll('#complexity-row .node');
+            const clientNodes = document.querySelectorAll('#client-row .node');
+            const endNode = document.getElementById('end-node');
+
+            // Start to Services
+            serviceNodes.forEach(service => {
+                drawLine(svg, startNode, service, 'start-to-service');
+            });
+
+            // Services to Complexity
+            serviceNodes.forEach(service => {
+                complexityNodes.forEach(complexity => {
+                    drawLine(svg, service, complexity, `service-${service.dataset.nodeId}-to-complexity`);
+                });
+            });
+
+            // Complexity to Clients
+            complexityNodes.forEach(complexity => {
+                clientNodes.forEach(client => {
+                    drawLine(svg, complexity, client, 'complexity-to-client');
+                });
+            });
+
+            // Clients to End
+            clientNodes.forEach(client => {
+                drawLine(svg, client, endNode, 'client-to-end');
+            });
+        }
+
+        function drawLine(svg, from, to, id) {
+            const fromPos = getNodeCenter(from);
+            const toPos = getNodeCenter(to);
+            
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            const midY = (fromPos.y + toPos.y) / 2;
+            const d = `M ${fromPos.x} ${fromPos.y} C ${fromPos.x} ${midY}, ${toPos.x} ${midY}, ${toPos.x} ${toPos.y}`;
+            
+            line.setAttribute('d', d);
+            line.setAttribute('class', 'connection-line');
+            line.setAttribute('data-connection-id', id);
+            svg.appendChild(line);
+            
+            state.connections.push({ id, from, to, element: line });
+        }
+
+        function highlightConnections(node) {
+            const nodeId = node.dataset.nodeId;
+            state.connections.forEach(conn => {
+                if (conn.from === node || conn.to === node) {
+                    conn.element.classList.add('active');
+                }
+            });
+        }
+
+        function clearHighlights() {
+            document.querySelectorAll('.connection-line.active').forEach(line => {
+                if (!line.classList.contains('selected')) {
+                    line.classList.remove('active');
+                }
+            });
+        }
+
+        function selectService(node, serviceId, serviceName) {
+            document.querySelectorAll('.service').forEach(n => n.classList.remove('selected'));
+            node.classList.add('selected');
+            
+            state.service = { id: serviceId, name: serviceName };
+            
+            // Enable complexity nodes
+            document.querySelectorAll('#complexity-row .node').forEach(n => n.classList.remove('disabled'));
+            
+            // Highlight connections
+            state.connections.forEach(conn => {
+                conn.element.classList.remove('selected');
+                if (conn.from === node) {
+                    conn.element.classList.add('selected');
+                }
+            });
+        }
+
+        function selectComplexity(node, complexityId) {
+            if (node.classList.contains('disabled')) return;
+            
+            document.querySelectorAll('.complexity').forEach(n => n.classList.remove('selected'));
+            node.classList.add('selected');
+            
+            state.complexity = complexityId;
+            state.pricing = pricingData[state.service.id][complexityId];
+            
+            // Enable client nodes
+            document.querySelectorAll('#client-row .node').forEach(n => n.classList.remove('disabled'));
+            
+            // Highlight connections
+            state.connections.forEach(conn => {
+                if (conn.from === node) {
+                    conn.element.classList.add('selected');
+                }
+            });
+        }
+
+        function selectClient(node, clientId, discount) {
+            if (node.classList.contains('disabled')) return;
+            
+            document.querySelectorAll('.client').forEach(n => n.classList.remove('selected'));
+            node.classList.add('selected');
+            
+            state.client = { id: clientId, discount };
+            
+            // Activate end node
+            document.getElementById('end-node').classList.add('active');
+            
+            // Highlight final connections
+            state.connections.forEach(conn => {
+                if (conn.from === node) {
+                    conn.element.classList.add('selected');
+                }
+            });
+            
+            // Show summary
+            showSummary();
+        }
+
+        function showSummary() {
+            const [min, max] = state.pricing;
+            const discount = state.client.discount;
+            const finalMin = Math.round(min * (1 - discount / 100));
+            const finalMax = Math.round(max * (1 - discount / 100));
+
+            // Update summary grid
+            const summaryGrid = document.getElementById('summaryGrid');
+            summaryGrid.innerHTML = `
+                <div class="summary-item">
+                    <div class="summary-label">Service</div>
+                    <div class="summary-value">${state.service.name}</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Complexity</div>
+                    <div class="summary-value">${complexityNames[state.complexity]}</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Client Type</div>
+                    <div class="summary-value">${clientNames[state.client.id]}</div>
+                </div>
+                ${discount > 0 ? `
+                <div class="summary-item">
+                    <div class="summary-label">Discount Applied</div>
+                    <div class="summary-value" style="color: #7b68ee;">${discount}% off</div>
+                </div>
+                ` : ''}
+            `;
+
+            // Update total
+            document.getElementById('totalAmount').textContent = 
+                `${finalMin.toLocaleString()} – ${finalMax.toLocaleString()}`;
+
+            // Show discount badge
+            const discountBadge = document.getElementById('discountBadge');
+            if (discount > 0) {
+                discountBadge.innerHTML = `<div class="discount-badge">🎉 ${discount}% sliding scale discount applied</div>`;
+            } else {
+                discountBadge.innerHTML = '';
+            }
+
+            // Show panel
+            document.getElementById('summaryPanel').classList.add('active');
+            setTimeout(() => {
+                document.getElementById('summaryPanel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }
+
+        function resetCalculator() {
+            state.service = null;
+            state.complexity = null;
+            state.client = null;
+            state.pricing = {};
+
+            // Reset node states
+            document.querySelectorAll('.node').forEach(node => {
+                node.classList.remove('selected', 'active');
+            });
+            document.querySelectorAll('#complexity-row .node, #client-row .node').forEach(node => {
+                node.classList.add('disabled');
+            });
+
+            // Reset connections
+            document.querySelectorAll('.connection-line').forEach(line => {
+                line.classList.remove('selected', 'active');
+            });
+
+            // Hide summary
+            document.getElementById('summaryPanel').classList.remove('active');
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Initialize on load
+        window.addEventListener('load', initConnections);
+    </script>
+</body>
+</html>

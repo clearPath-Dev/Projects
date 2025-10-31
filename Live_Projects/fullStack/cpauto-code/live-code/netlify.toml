@@ -3,10 +3,10 @@
   publish = "dist"
 
 [context.production]
-  base = "main"
+  base = "Live_Projects/fullStack/cpauto-code/live-code"
 
 [context.staging]
-  base = "staging"
+  base = "Live_Projects/fullStack/cpauto-code/live-code"
 
 [[redirects]]
   from = "/*"
