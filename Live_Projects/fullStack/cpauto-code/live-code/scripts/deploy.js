@@ -3,6 +3,17 @@ import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
 
+fs.writeFileSync(
+  path.join("dist", "_headers"),
+  [
+    "/*",
+    "  Access-Control-Allow-Origin: *",
+    "  Access-Control-Allow-Methods: GET, OPTIONS",
+    "  Access-Control-Allow-Headers: Origin, Content-Type, Accept, Range",
+    ""
+  ].join("\n")
+);
+
 dotenv.config();
 
 const ENV = process.argv[2] || "staging";
