@@ -8,7 +8,4 @@
 [context.staging]
   base = "Live_Projects/fullStack/cpauto-code/live-code"
 
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+
