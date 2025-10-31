@@ -8,4 +8,11 @@
 [context.staging]
   base = "Live_Projects/fullStack/cpauto-code/live-code"
 
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, OPTIONS"
+    Access-Control-Allow-Headers = "Origin, Content-Type, Accept, Range"
+
 
