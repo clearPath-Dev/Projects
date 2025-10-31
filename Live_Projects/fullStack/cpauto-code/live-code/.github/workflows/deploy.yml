@@ -34,7 +34,7 @@ jobs:
           publish-dir: './dist'
           production-deploy: false
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          site-id: ${{ secrets.NETLIFY_SITE_ID_STAGING }}
+          site-id: ${{ secrets.NETLIFY_SITE_ID }}
           auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           deploy-message: "Staging build ${{ steps.vars.outputs.hash }}"
           alias: 'staging'
@@ -47,7 +47,7 @@ jobs:
           publish-dir: './dist'
           production-deploy: true
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          site-id: ${{ secrets.NETLIFY_SITE_ID_PROD }}
+          site-id: ${{ secrets.NETLIFY_SITE_ID }}
           auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           deploy-message: "Production build ${{ steps.vars.outputs.hash }}"
 
@@ -59,7 +59,7 @@ jobs:
           publish-dir: './dist'
           production-deploy: false
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          site-id: ${{ secrets.NETLIFY_SITE_ID_STAGING }}
+          site-id: ${{ secrets.NETLIFY_SITE_ID }}
           auth-token: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           deploy-message: "Preview for PR #${{ github.event.number }}"
           alias: "pr-${{ github.event.number }}"

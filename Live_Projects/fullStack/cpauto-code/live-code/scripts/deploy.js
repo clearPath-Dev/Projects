@@ -7,7 +7,7 @@ dotenv.config();
 
 const ENV = process.argv[2] || "staging";
 const SITE_ID =
-  ENV === "prod" ? process.env.NETLIFY_SITE_ID_PROD : process.env.NETLIFY_SITE_ID_STAGING;
+  ENV === "prod" ? process.env.NETLIFY_SITE_ID : process.env.NETLIFY_SITE_ID;
 
 if (!SITE_ID || !process.env.NETLIFY_AUTH_TOKEN) {
   console.error("❌ Missing .env configuration.");

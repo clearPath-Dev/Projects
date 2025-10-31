@@ -1,9 +1,10 @@
-// <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-// <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-// <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js"></script>
+Promise.all([
+  loadScript('https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js'),
+  loadScript('https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js'),
+  loadScript('https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollToPlugin.min.js')
+]).then(() => {
+  gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
-
-gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
 
 let horizontalScrollResizeTimeout;
 
@@ -943,3 +944,7 @@ const title = item.querySelector('.name')?.textContent?.trim() || 'Untitled Proj
     else if (e.key === 'ArrowLeft' && currentImages.length > 1) switchToImage((currentImageIndex - 1 + currentImages.length) % currentImages.length);
     else if (e.key === 'ArrowRight' && currentImages.length > 1) switchToImage((currentImageIndex + 1) % currentImages.length);};}
 
+  // Your code here
+}).catch(error => {
+  console.error('Failed to load GSAP:', error);
+});
