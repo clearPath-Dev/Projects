@@ -1,0 +1,36 @@
+headersOrigin = "config"
+plugins = []
+redirects = []
+
+[functions]
+
+[functions."*"]
+
+[build]
+publish = "/Users/thinkmachineos/Projects_Pub/Live_Projects/fullStack/cpauto-code/live-code/dist"
+publishOrigin = "config"
+commandOrigin = "config"
+base = "/Users/thinkmachineos/Projects_Pub/Live_Projects/fullStack/cpauto-code/live-code"
+command = "npm run build"
+
+[build.environment]
+
+[build.processing]
+
+[build.processing.css]
+
+[build.processing.html]
+
+[build.processing.images]
+
+[build.processing.js]
+
+[build.services]
+
+[[headers]]
+for = "/*"
+
+[headers.values]
+Access-Control-Allow-Origin = "*"
+Access-Control-Allow-Methods = "GET, OPTIONS"
+Access-Control-Allow-Headers = "Origin, Content-Type, Accept, Range"
