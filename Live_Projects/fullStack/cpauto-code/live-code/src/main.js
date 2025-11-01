@@ -2,20 +2,13 @@
 import cssUrl from "./main.css?url";
 
 (function boot() {
-  // ---- inject your CSS so Webflow pages use it ----
+  // ---- inject CSS so Webflow pages use it ----
   const link = document.createElement("link");
   link.rel = "stylesheet";
   link.href = cssUrl;
   document.head.appendChild(link);
   
-  // ---- your real custom JS starts here ----
-  console.log("custom script starting...");
-  
-  // --------------------------------------------
-  // Your existing logic...
-  // --------------------------------------------
-  
-  // Helper function to load external scripts
+
   function loadScript(src) {
     return new Promise((resolve, reject) => {
       const script = document.createElement('script');
@@ -713,7 +706,7 @@ import cssUrl from "./main.css?url";
     };
 
     // Main initialization
-    window.addEventListener("DOMContentLoaded", () => {
+    function startApp() {
       window.themeManager = new ThemeManager();
       initializeEnhancedSideMenu();
       window.contentModalManager = new ContentModalManager();
@@ -766,9 +759,13 @@ import cssUrl from "./main.css?url";
       // Webflow initialization
       typeof Webflow !== 'undefined' && Webflow.push ? Webflow.push(initializeScrollAndDistribution) :
         setInterval(() => typeof Webflow !== 'undefined' && Webflow.push && (clearInterval(this), Webflow.push(initializeScrollAndDistribution)), 100);
-    });
+    };
 
-    if (document.readyState !== 'loading') window.themeManager = new ThemeManager();
+      if (document.readyState === "loading") {
+    window.addEventListener("DOMContentLoaded", startApp, { once: true });
+  } else {
+    startApp();
+  }
 
     // Scroll and distribution system
     function initializeScrollAndDistribution() {
