@@ -5,8 +5,10 @@ const cssUrl = new URL('./main.css', import.meta.url).toString();
   document.documentElement.classList.add('js-booting');
   // ---- inject CSS so Webflow pages use it ----
   const link = document.createElement("link");
-  link.rel = "stylesheet";
+  link.rel = "preload";
+  link.as = "style";
   link.href = cssUrl;
+  link.onload = () => { link.rel = "stylesheet"; };
   document.head.appendChild(link);
   
 
