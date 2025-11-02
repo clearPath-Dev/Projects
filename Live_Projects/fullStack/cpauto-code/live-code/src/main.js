@@ -6,7 +6,7 @@ const cssUrl = new URL('./main.css', import.meta.url).toString();
   const link = document.createElement("link");
   link.as = "stylesheet";
   link.href = cssUrl;
-  document.head.preload(link);
+  document.head.prepend(link);
   
 
   function loadScript(src) {
