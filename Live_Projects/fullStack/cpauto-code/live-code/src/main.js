@@ -2,14 +2,11 @@
 const cssUrl = new URL('./main.css', import.meta.url).toString();
 
 (function boot() {
-  document.documentElement.classList.add('js-booting');
   // ---- inject CSS so Webflow pages use it ----
   const link = document.createElement("link");
-  link.rel = "preload";
-  link.as = "style";
+  link.rel = 'stylesheet'
   link.href = cssUrl;
-  link.onload = () => { link.rel = "stylesheet"; };
-  document.head.appendChild(link);
+  document.head.prepend(link);
   
 
   function loadScript(src) {
@@ -430,12 +427,11 @@ const cssUrl = new URL('./main.css', import.meta.url).toString();
       }
       
       init() {
-        this.createModal();
         this.setupEventListeners();
       }
 
-      createModal() {
-        if (document.getElementById('contentModal')) return;
+      ensureModal() {
+        if (this.modal) return;
         document.body.insertAdjacentHTML('beforeend', `
           <div class="content-modal-overlay" id="contentModal">
             <div class="content-modal">
@@ -447,7 +443,7 @@ const cssUrl = new URL('./main.css', import.meta.url).toString();
             </div>
           </div>
         `);
-        this.modal = document.getElementById('contentModal');
+        this.modal = document.getElementById('contentModal'); 
       }
 
       setupEventListeners() {
@@ -465,6 +461,7 @@ const cssUrl = new URL('./main.css', import.meta.url).toString();
       }
 
       openModal(options = {}) {
+        this.ensureModal();
         const { title = 'Modal Title', content = '<p>No content provided</p>', type = 'default', width = 'medium' } = options;
         document.getElementById('contentModalTitle').textContent = title;
         document.getElementById('contentModalBody').innerHTML = content;
