@@ -13,6 +13,12 @@ a,a:link,a:visited,a:hover,a:active{text-decoration:none}
 .dud {color:var(--text-primary);animation: flicker 0.30s infinite;}
 @keyframes flicker {0%, 100% { opacity: 1; }50% { opacity: 0.3; }}
 
+/* Hide JS-hydrated UI until the app finishes booting */
+.js-booting .side-menu { opacity: 0; visibility: hidden; }
+.js-booting .menu-block .inner-marquee { opacity: 0; }
+/* show once hydrated */
+.js-hydrated .menu-block .inner-marquee { opacity: 1; }
+
 
 /* Global Button Styles - Condensed */
 button,.button,.w-button,.btn,input[type="submit"],input[type="button"]{appearance:none;-webkit-appearance:none;border:none;outline:none;margin:0;display:inline-flex;align-items:center;justify-content:center;padding:0.75rem 1.5rem;background:var(--text-primary);color:var(--bg-primary);font-family:inherit;font-size:0.9rem;font-weight:500;letter-spacing:1px;text-transform:uppercase;text-decoration:none;border:2px solid var(--text-primary);border-radius:6px;cursor:pointer;transition:all 0.3s ease;min-height:44px;white-space:nowrap}
@@ -143,9 +149,9 @@ a.modal-links:hover{background:var(--text-primary);color:var(--bg-secondary);tra
 /* Content Modal Styles - Add to your CSS */
 
 /* Modal Overlay */
-.content-modal-overlay {position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0, 0, 0, 0.8);z-index:1100;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity 0.4s ease,visibility 0.4s ease;padding:2rem;}
+.content-modal-overlay {position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0, 0, 0, 0.8);z-index:1100;display:flex;align-items:center;justify-content:center;opacity:0!important;visibility:hidden!important;transition:opacity 0.4s ease,visibility 0.4s ease;padding:2rem;}
 [data-theme="dark"] .content-modal-overlay{background:rgba(0, 0, 0, 0.9);}
-.content-modal-overlay.active{opacity:1;visibility:visible;}
+.content-modal-overlay.active{opacity:1!important;visibility:visible!important;}
 
 /* Modal Container */
 .content-modal{background: var(--bg-secondary);border-radius:12px;overflow:hidden;position:relative;transform:scale(0.9);transition:transform 0.4s ease;box-shadow:0 20px 60px var(--shadow-color);max-height:90vh;display:flex;flex-direction:column;}
@@ -573,3 +579,4 @@ img,.img-wrapper img,.modal-main-image,.modal-thumbnail,.menu-img,.work-default,
 .hero-personal-name,.hero-personal-title,.hero-personal-description{opacity:1;transform:none;animation:none;color:var(--text-primary)}
 [data-theme="dark"]{--bg-primary:#fff;--text-primary:#000}
 }
+

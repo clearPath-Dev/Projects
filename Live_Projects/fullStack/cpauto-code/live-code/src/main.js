@@ -2,6 +2,7 @@
 const cssUrl = new URL('./main.css', import.meta.url).toString();
 
 (function boot() {
+  document.documentElement.classList.add('js-booting');
   // ---- inject CSS so Webflow pages use it ----
   const link = document.createElement("link");
   link.rel = "stylesheet";
@@ -759,7 +760,10 @@ const cssUrl = new URL('./main.css', import.meta.url).toString();
       // Webflow initialization
       typeof Webflow !== 'undefined' && Webflow.push ? Webflow.push(initializeScrollAndDistribution) :
         setInterval(() => typeof Webflow !== 'undefined' && Webflow.push && (clearInterval(this), Webflow.push(initializeScrollAndDistribution)), 100);
-    };
+      
+      document.documentElement.classList.remove('js-booting');
+      document.documentElement.classList.add('js-hydrated');  
+      };
 
       if (document.readyState === "loading") {
     window.addEventListener("DOMContentLoaded", startApp, { once: true });
