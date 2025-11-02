@@ -4,7 +4,7 @@ const cssUrl = new URL('./main.css', import.meta.url).toString();
 (function boot() {
   // ---- inject CSS so Webflow pages use it ----
   const link = document.createElement("link");
-  link.as = "style";
+  link.as = "stylesheet";
   link.href = cssUrl;
   document.head.preload(link);
   
