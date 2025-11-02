@@ -1,5 +1,5 @@
 // src/main.js
-import cssUrl from "./main.css?url";
+const cssUrl = new URL('./main.css', import.meta.url).toString();
 
 (function boot() {
   // ---- inject CSS so Webflow pages use it ----
