@@ -6,7 +6,10 @@ const cssUrl = new URL('./main.css', import.meta.url).toString();
   link.rel = 'stylesheet';
   link.href = cssUrl;
   document.head.appendChild(link);
-  
+
+  const calculatorScript = document.createElement('script');
+  calculatorScript.src = 'https://clearpathautomations.tech/scripts/calculator.js'; // replace with correct path
+  document.head.appendChild(calculatorScript);
 
   function loadScript(src) {
     return new Promise((resolve, reject) => {
