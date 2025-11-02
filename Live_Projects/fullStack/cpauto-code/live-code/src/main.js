@@ -2,11 +2,10 @@
 const cssUrl = new URL('./main.css', import.meta.url).toString();
 
 (function boot() {
-  // ---- inject CSS so Webflow pages use it ----
-  const link = document.createElement("link");
-  link.as = "stylesheet";
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
   link.href = cssUrl;
-  document.head.appendChild(link);
+  document.head.prepend(link);
   
 
   function loadScript(src) {
