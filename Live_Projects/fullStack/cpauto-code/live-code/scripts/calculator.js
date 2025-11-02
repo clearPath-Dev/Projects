@@ -83,7 +83,7 @@
 
   /** -------- BUTTON -------- **/
   function insertCalcButton() {
-    const header = document.querySelector(".header-icons") || document.querySelector("header") || document.querySelector(".header");
+    const header =  document.querySelector("header") || document.querySelector(".header") || document.querySelector(".navbar");
     if (!header) return console.warn("Header not found for calculator button.");
     const btn = document.createElement("button");
     btn.className = "calculator-trigger";
